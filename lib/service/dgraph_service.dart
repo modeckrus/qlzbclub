@@ -282,7 +282,8 @@ mutation AddClosedClub($title: String!, $description: String!, $avatarUrl: Strin
         'moderators': [
           uid,
           ...club.moderators
-        ]
+        ],
+        
       }
     ));
   }
