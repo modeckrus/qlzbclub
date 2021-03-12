@@ -1,0 +1,1 @@
+curl 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAllSFQBnQHUF_bjjsW29k4X0QgunkbXLk' -H 'Content-Type: application/json' --data-binary '{"email":"modeckrus3@gmail.com","password":"Qwerty12","returnSecureToken":true}' 

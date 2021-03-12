@@ -1,0 +1,76 @@
+type Task @withSubscription 
+        {
+    id: ID!
+    title: String! @search(by: [fulltext])
+    completed: Boolean! @search
+    owner: User!
+}
+type User @withSubscription{
+  fid: String! @id @search(by: [hash])
+  name: String! @search(by: [fulltext])
+  tasks: [Task!] @hasInverse(field: owner)
+  bio: String
+  avatarUrl: String
+  socials: [String!]
+  createdAt: DateTime!
+  lastLogin: DateTime!
+  adminOf: [Club!] @hasInverse(field: owner)
+  link: String! @search(by: [fulltext])
+  tags: [String!]!
+  subs: [String!] @search(by: [hash]) #Subscribtions
+  followers: [String!] @search(by: [hash])
+}
+
+interface Club @withSubscription{
+    id: ID!
+    owner: User!
+    moderators: [User!]
+    members: [User!]!
+    title: String! @search(by: [fulltext])
+    description: String!
+    avatarUrl: String 
+    tags: [String!] @search(by: [term])
+}
+
+type OpenClub implements Club{
+    id: ID!
+    owner: User!
+    moderators: [User!]
+    members: [User!]!
+    title: String! @search(by: [fulltext])
+    description: String!
+    avatarUrl: String 
+    tags: [String!] @search(by: [term])
+}
+type ClosedClub implements Club{
+    id: ID!
+    owner: User!
+    moderators: [User!]
+    members: [User!]!
+    title: String! @search(by: [fulltext])
+    description: String!
+    avatarUrl: String 
+    tags: [String!] @search(by: [term])
+    invitedPeoples: [String!] @search(by: [hash])
+}
+type SocialClub implements Club{
+    id: ID!
+    owner: User!
+    moderators: [User!]
+    members: [User!]!
+    title: String! @search(by: [fulltext])
+    description: String!
+    avatarUrl: String 
+    tags: [String!] @search(by: [term])
+}
+# interface Club @withSubscription{
+#     id: ID!
+#     owner: User!
+#     members: [User!]!
+#     title: String! @search(by: [fulltext])
+#     description: String!
+#     avatarUrl: String 
+#     tags: [String!] @search(by [term])
+# }
+
+# Dgraph.Authorization {"JWKUrl":"https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com", "Namespace": "https://dgraph.io/jwt/claims", "Audience": ["qlzbclubhouse"], "Header": "X-Auth-Token"}

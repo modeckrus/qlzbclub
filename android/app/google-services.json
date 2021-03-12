@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "692355235475",
+    "project_id": "qlzbclubhouse",
+    "storage_bucket": "qlzbclubhouse.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692355235475:android:9415d3369397e2b0689766",
+        "android_client_info": {
+          "package_name": "com.qlzb.clubhouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692355235475-tfna0srr5hkb61v0pn0eksc8kg8v8o2i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qlzb.clubhouse",
+            "certificate_hash": "f7cfdfb50ab3791383d3f46e9508afad37c4696f"
+          }
+        },
+        {
+          "client_id": "692355235475-atf4qli3i7slcp43000bm9qagh8pcqtl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAllSFQBnQHUF_bjjsW29k4X0QgunkbXLk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "692355235475-atf4qli3i7slcp43000bm9qagh8pcqtl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
