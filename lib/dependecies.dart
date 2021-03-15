@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import 'entities/user.dart';
 import 'impl/fire_user_repo_impl.dart';
 import 'service/db_service.dart';
 import 'service/dgraph_service.dart';
@@ -15,6 +16,7 @@ class Dependencies {
         await initDb();
       }
     }
+    
   }
 
   static bool isDb = false;
@@ -23,6 +25,11 @@ class Dependencies {
     GetIt.I.registerSingleton<Db>(dgraph);
     try {
       await dgraph.init();
+      final user = GetIt.I.get<UserService>().user;
+        if(GetIt.I.isRegistered<User>()){
+          GetIt.I.unregister<User>();
+        }
+        GetIt.I.registerSingleton<User>(user);
       isDb = true;
       return 1;
     } catch (e) {

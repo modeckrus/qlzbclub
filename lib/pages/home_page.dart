@@ -41,6 +41,14 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, '/club');
             },
           ),
+          ListTile(
+            leading: Icon(Icons.subscriptions),
+            title: Text('ClubList'),
+            trailing: Icon(Icons.navigate_next),
+            onTap: (){
+              Navigator.pushNamed(context, '/clubList');
+            },
+          ),
         ],
       ),
     ));

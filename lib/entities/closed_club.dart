@@ -13,9 +13,9 @@ class ClosedClub extends Equatable {
   @HiveField(0)
   final User owner;
   @HiveField(1)
-  final List<String> moderators;
+  final List<User> moderators;
   @HiveField(2)
-  final List<String> members;
+  final List<User> members;
   @HiveField(3)
   final String title;
   @HiveField(4)
@@ -26,52 +26,27 @@ class ClosedClub extends Equatable {
   final List<String>? invitedPeoples; 
   @HiveField(7)
   final String? avatarUrl;
-  ClosedClub(this.owner, this.moderators, this.members, this.title, this.description, this.tags, this.invitedPeoples, this.avatarUrl);
-  factory ClosedClub.createClosedClub({required String title, required String description, required List<String> tags, List<String>? invitedPeople = const [], List<String> moderators = const [], String? avatarUrl}){
-    return ClosedClub(GetIt.I.get<User>(), moderators, [], title, description, tags, invitedPeople, avatarUrl);
+  @HiveField(8)
+  final String? id;
+  ClosedClub(this.owner, this.moderators, this.members, this.title, this.description, this.tags, this.invitedPeoples, this.avatarUrl, this.id);
+  factory ClosedClub.createClosedClub({required String title, required String description, required List<String> tags, List<String>? invitedPeople = const [], List<String> moderators = const [], String? avatarUrl, String? id}){
+    return ClosedClub(GetIt.I.get<User>(), [], [], title, description, tags, invitedPeople, avatarUrl, id);
   }
 
   @override
   List<Object> get props => [owner, moderators, members, title, description, tags];
 
-  Map<String, dynamic> toMap() {
-    return {
-      'owner': owner.toMap(),
-      'moderators': moderators.map((x) => x).toList(),
-      'members': members.map((x) => x).toList(),
-      'title': title,
-      'description': description,
-      'tags': tags,
-      'invitedPeoples': invitedPeoples?.map((x) => x).toList(),
-    };
-  }
-
-  factory ClosedClub.fromMap(Map<String, dynamic> map) {
-    return ClosedClub(
-      User.fromMap(map['owner']),
-      map['moderators'] == null? []:List<String>.from(map['moderators'].map((x) => x)),
-      map['members'] == null? []:List<String>.from(map['members'].map((x) => x)),
-      map['title'],
-      map['description'],
-      map['tags'] == null? []:List<String>.from(map['tags']),
-      map['invitedPeoples'] == null? []:List<String>.from(map['invitedPeoples'].map((x) => x)),
-      map['avatarUrl']
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ClosedClub.fromJson(String source) => ClosedClub.fromMap(json.decode(source));
+  
 
   ClosedClub copyWith({
     User? owner,
-    List<String>? moderators,
-    List<String>? members,
+    List<User>? moderators,
+    List<User>? members,
     String? title,
     String? description,
     List<String>? tags,
     List<String>? invitedPeoples,
-    String? avatarUrl
+    String? avatarUrl,
   }) {
     return ClosedClub(
       owner ?? this.owner,
@@ -81,10 +56,40 @@ class ClosedClub extends Equatable {
       description ?? this.description,
       tags ?? this.tags,
       invitedPeoples ?? this.invitedPeoples,
-      avatarUrl ?? this.avatarUrl
+      avatarUrl ?? this.avatarUrl,
+      id ?? this.id
     );
   }
 
-  @override
-  bool get stringify => true;
+  Map<String, dynamic> toMap() {
+    return {
+      'owner': owner.toMap(),
+      'moderators': moderators?.map((x) => x.toMap())?.toList(),
+      'members': members?.map((x) => x.toMap())?.toList(),
+      'title': title,
+      'description': description,
+      'tags': tags,
+      'invitedPeoples': invitedPeoples,
+      'avatarUrl': avatarUrl,
+      'id':id
+    };
+  }
+
+  factory ClosedClub.fromMap(Map<String, dynamic> map) {
+    return ClosedClub(
+      User.fromMap(map['owner']),
+      map['moderators'] == null ? [] : List<User>.from(map['moderators']?.map((x) => User.fromMap(x))),
+      map['members'] == null ? [] : List<User>.from(map['members']?.map((x) => User.fromMap(x))),
+      map['title'],
+      map['description'],
+      map['tags'] == null ? [] :List<String>.from(map['tags']),
+      map['invitedPeoples'] == null ? []: List<String>.from(map['invitedPeoples']),
+      map['avatarUrl'],
+      map['id']
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ClosedClub.fromJson(String source) => ClosedClub.fromMap(json.decode(source));
 }

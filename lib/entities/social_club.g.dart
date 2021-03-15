@@ -18,19 +18,20 @@ class SocialClubAdapter extends TypeAdapter<SocialClub> {
     };
     return SocialClub(
       fields[0] as User,
-      (fields[1] as List).cast<String>(),
-      (fields[2] as List).cast<String>(),
+      (fields[1] as List).cast<User>(),
+      (fields[2] as List).cast<User>(),
       fields[3] as String,
       fields[4] as String,
       (fields[5] as List).cast<String>(),
       fields[6] as String,
+      fields[7] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, SocialClub obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.owner)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class SocialClubAdapter extends TypeAdapter<SocialClub> {
       ..writeByte(5)
       ..write(obj.tags)
       ..writeByte(6)
-      ..write(obj.avatarUrl);
+      ..write(obj.avatarUrl)
+      ..writeByte(7)
+      ..write(obj.id);
   }
 
   @override

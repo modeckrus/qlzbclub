@@ -18,7 +18,8 @@ class AppLocalizations {
   }
 
   static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations) ?? AppLocalizations();
+    return Localizations.of<AppLocalizations>(context, AppLocalizations) ??
+        AppLocalizations();
   }
 
   String get title {
@@ -28,18 +29,35 @@ class AppLocalizations {
       desc: 'Title for the Weather Application',
     );
   }
-  String get instructionVerifyEmail{
+
+  String get subscribe {
+    return Intl.message('subscribe', name: 'subscribe');
+  }
+
+  String get connect {
+    return Intl.message('Connect', name: 'connect');
+  }
+
+  String get unknow {
+    return Intl.message('unknow', name: 'unknow');
+  }
+
+  String get instructionVerifyEmail {
     return Intl.message('Check ur email, and verify address');
   }
-  String get link{
+
+  String get link {
     return Intl.message('Link', name: 'link');
   }
-  String get bio{
+
+  String get bio {
     return Intl.message('Bio', name: 'bio');
   }
-  String get verifyEmail{
+
+  String get verifyEmail {
     return Intl.message('Verify Email', name: 'verifyEmail');
   }
+
   String get file {
     return Intl.message('File', name: 'file');
   }
@@ -344,6 +362,7 @@ class AppLocalizations {
   String get invalidEmail {
     return Intl.message('Invalid email', name: 'invalidEmail');
   }
+
   String get invalidPassword {
     return Intl.message('Invalid password', name: 'invalidPassword');
   }

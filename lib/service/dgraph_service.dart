@@ -223,7 +223,7 @@ mutation UpdateUser($fid: String!, $name: String!, $bio: String, $socials: [Stri
   }
 
   static const String createClosedClubStr = r'''
-mutation AddClosedClub($title: String!, $description: String!, $avatarUrl: String, $tags:[String!], $fid: String!, $moderators: [UserRef!]){
+mutation AddClosedClub($title: String!, $description: String!, $avatarUrl: String, $tags:[String!], $fid: String!, $moderators: [UserRef!], $invitedPeoples: [String!]){
   addClosedClub(input: [
     {
       owner: {
@@ -238,7 +238,8 @@ mutation AddClosedClub($title: String!, $description: String!, $avatarUrl: Strin
         {
           fid: $fid
         }
-      ]
+      ],
+      invitedPeoples: $invitedPeoples
     }
   ]){
     closedClub{
@@ -260,17 +261,14 @@ mutation AddClosedClub($title: String!, $description: String!, $avatarUrl: Strin
       title
       description
       tags
-      invitedPeoples{
-        fid
-        name
-        avatarUrl
-      }
+      invitedPeoples
     }
   }
 }
   ''';
   @override
   Future<ClosedClub?> createClosedClub(ClosedClub club) async{
+    try{
     final result = await graph?.mutate(MutationOptions(
       document: gql(createClosedClubStr),
       variables: {
@@ -283,74 +281,466 @@ mutation AddClosedClub($title: String!, $description: String!, $avatarUrl: Strin
           uid,
           ...club.moderators
         ],
-        
+        'invitedPeoples': club.invitedPeoples
       }
     ));
+    if(result!.isConcrete){
+      if(result.data['closedClub'] == null){
+        print('Data null');
+        return null;
+      }
+      final cclub = ClosedClub.fromMap(result.data['closedClub']);
+      return cclub;
+    }else{
+      print('Result not concrete');
+      return null;
+    }
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  static const String createSocialClubStr = r'''
+mutation AddSocialClub($title: String!, $description: String!, $avatarUrl: String, $tags:[String!], $fid: String!, $moderators: [UserRef!]){
+  addSocialClub(input: [
+    {
+      owner: {
+        fid: $fid
+      }
+      title: $title
+      description: $description
+      avatarUrl: $avatarUrl
+      tags: $tags
+      moderators: $moderators
+      members: [
+        {
+          fid: $fid
+        }
+      ]
+    }
+  ]){
+    socialClub{
+      owner{
+        fid
+        name
+        avatarUrl
+      }
+      moderators{
+        fid
+      	name
+        avatarUrl
+      }
+      members{
+        fid
+        name
+        avatarUrl
+      }
+      title
+      description
+      tags
+    }
+  }
+}
+  ''';
+
+  @override
+  Future<SocialClub?> createSocialClub(SocialClub club) async{
+    try{
+    final result = await graph?.mutate(MutationOptions(
+      document: gql(createSocialClubStr),
+      variables: {
+        'title':club.title,
+        'description': club.description,
+        'avatarUrl':club.avatarUrl,
+        'tags':club.tags,
+        'fid':uid,
+        'moderators': [
+          uid,
+          ...club.moderators
+        ],
+
+      }
+    ));
+    if(result!.isConcrete){
+      if(result.data['socialClub'] == null ){
+        print('data null');
+        return null;
+      }
+      final cclub = SocialClub.fromMap(result.data['socialClub']);
+      return cclub;
+    }else{
+      print('Result not concrete');
+      return null;
+    }
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  static const String createOpenClubStr = r'''
+
+  # Welcome to Altair GraphQL Client.
+  # You can send your request using CmdOrCtrl + Enter.
+
+  # Enter your graphQL query here.
+mutation AddOpenClub($title: String!, $description: String!, $avatarUrl: String, $tags:[String!], $fid: String!, $moderators: [UserRef!]){
+  addOpenClub(input: [
+    {
+      owner: {
+        fid: $fid
+      }
+      title: $title
+      description: $description
+      avatarUrl: $avatarUrl
+      tags: $tags
+      moderators: $moderators
+      members: [
+        {
+          fid: $fid
+        }
+      ]
+    }
+  ]){
+    openClub{
+      owner{
+        fid
+      }
+      moderators{
+        fid
+      	name
+        avatarUrl
+      }
+      members{
+        fid
+        name
+        avatarUrl
+      }
+      title
+      description
+      tags
+    }
+  }
+}
+  ''';
+  @override
+  Future<OpenClub?> createOpenClub(OpenClub club) async{
+    try{
+    final result = await graph?.mutate(MutationOptions(
+      document: gql(createOpenClubStr),
+      variables: {
+        'title':club.title,
+        'description': club.description,
+        'avatarUrl':club.avatarUrl,
+        'tags':club.tags,
+        'fid':uid,
+        'moderators': [
+          uid,
+          ...club.moderators
+        ],
+
+      }
+    ));
+    if(result!.isConcrete){
+      if(result.data['openClub'] == null ){
+        print('data null');
+        return null;
+      }
+      final cclub = OpenClub.fromMap(result.data['socialClub']);
+      return cclub;
+    }else{
+      print('Result not concrete');
+      return null;
+    }
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  static const String deleteClubStr = r'''
+mutation UpdateClub{
+  deleteClub(filter: {
+    id: ["id"]
+  }){
+    msg
+  }
+}
+  ''';
+
+  @override
+  Future<bool> deleteClub(String id) async{
+    try{
+      final result = await graph?.mutate(MutationOptions(
+        document: gql(deleteClubStr),
+        variables: {
+          'id':id
+        }
+      ));
+      if(result == null){
+        return false;
+      }else{
+      if(result.isConcrete){
+        if(result.data['deleteClub'] == null) return false;
+        if(result.data['deleteClub']['msg'] == null) return false;
+        return result.data['deleteClub']['msg'] == 'Deleted';
+      }else{
+        return false;
+      }
+      }
+    }catch(e){
+      print(e);
+      return false;
+    }
+    }
+    static const String invitePeopleStr = r'''
+mutation InvitePeoples($clubId: ID!,$peoples: [String!]!){
+  updateClosedClub(input:{
+    filter: {
+      id: [$clubId]
+    },
+    set:{
+      invitedPeoples: $peoples
+    }
+  }){
+    closedClub{
+      owner{
+        fid
+        name
+        avatarUrl
+      }
+      moderators{
+        fid
+      	name
+        avatarUrl
+      }
+      members{
+        fid
+        name
+        avatarUrl
+      }
+      title
+      description
+      tags
+      invitedPeoples
+    }
+  }
+}
+    ''';
+    @override
+    Future<ClosedClub?> invitePeople(String clubId,List<String> peoples) async{
+      try{
+        final result = await graph?.mutate(MutationOptions(
+          document: gql(invitePeopleStr),
+          variables: {
+            'clubId': clubId,
+            'peoples': peoples
+          }
+        ));
+        if(result == null){
+          throw Exception('Result null');
+        }
+        if(result.isConcrete){
+          if( result.data['updateClosedClub'] == null || result.data['updateClosedClub']['closedClub'] == null ||  result.data['updateClosedClub']['closedClub'][0] == null){
+            throw Exception('Result data null');
+          }
+          final json = result.data['updateClosedClub']['closedClub'][0];
+          final ClosedClub club = ClosedClub.fromMap(json);
+          return club;
+        }else{
+          throw Exception('Result not concrete');
+        }
+      }catch(e){
+        print(e);
+        return null;
+      }
+    }
+    static const String updateClubStr = r'''
+
+mutation UpdateClub($clubId: ID!, $moderators: [UserRef!], $title: String, $desc: String, $avatarUrl: String, $tags: [String!]){
+  updateClub(input: {
+    filter:{
+      id: [$clubId]
+    },
+    set:{
+      moderators: $moderators,
+      title: $title,
+      description: $desc,
+      avatarUrl: $avatarUrl,
+      tags: $tags
+    }
+  }){
+    club{
+      owner{
+        fid
+      }
+      moderators{
+        fid
+      	name
+        avatarUrl
+      }
+      members{
+        fid
+        name
+        avatarUrl
+      }
+      title
+      description
+      tags
+  }
+  }
+}
+    ''';
+    @override
+    Future<OpenClub?> updateClub(OpenClub club) async{
+    try{
+        final result = await graph?.mutate(MutationOptions(
+          document: gql(updateClubStr),
+          variables: {
+            'clubId': club.id,
+            'moderators': club.moderators,
+            'title': club.title,
+            'desc':club.description,
+            'avatarUrl': club.avatarUrl,
+            'tags': club.tags
+          }
+        ));
+        if(result == null){
+          throw Exception('Result null');
+        }
+        if(result.isConcrete){
+          if( result.data['updateClub'] == null || result.data['updateClub']['club'] == null ||  result.data['updateClub']['club'][0] == null){
+            throw Exception('Result data null');
+          }
+          final json = result.data['updateClub']['club'][0];
+          final OpenClub club = OpenClub.fromMap(json);
+          return club;
+        }else{
+          throw Exception('Result not concrete');
+        }
+      }catch(e){
+        print(e);
+        return null;
+      }
+  }
+  static const String createUserStr = r'''
+mutation AddUser($fid: String!, $name: String!, $bio: String, $socials: [String!], $createdAt: DateTime!, $link: String!, $tags: [String!]!){
+  addUser(input: {
+    fid: $fid,
+    name: $name,
+    bio: $bio,
+    socials: $socials,
+    createdAt: $createdAt,
+    lastLogin: $createdAt,
+    link: $link,
+    tags: $tags
+  }){
+    user{
+      fid
+      name
+      bio
+      socials
+      createdAt
+      lastLogin
+      link
+      tags
+      adminOf{
+        id
+        title
+      }
+    }
+  }
+}
+  ''';
+  @override
+  Future<User?> createUser(User nuser) async{
+      try{
+        final result = await graph?.mutate(MutationOptions(
+          document: gql(createUserStr),
+          variables: {
+            'fid': uid,
+            'name': nuser.name,
+            'bio': nuser.bio,
+            'socials': nuser.socials,
+            'createdAt': DateTime.now().toIso8601String(),
+            'link': nuser.link,
+            'tags': nuser.tags
+          }
+        ));
+        if(result == null){
+          throw Exception('Result null');
+        }
+        if(result.isConcrete){
+          if( result.data['addUser'] == null || result.data['addUser']['user'] == null ||  result.data['addUser']['user'][0] == null){
+            throw Exception('Result data null');
+          }
+          final json = result.data['addUser']['user'][0];
+          final User user = User.fromMap(json);
+          return user;
+        }else{
+          throw Exception('Result not concrete');
+        }
+      }catch(e){
+        print(e);
+        return null;
+      }
+    }
+    static const String findByTitleStr = r'''
+query FindByTitle($title: String!){
+  queryOpenClub(filter: {
+    title: {anyoftext: $title}
+  }){
+    id
+    owner{
+      fid
+      name
+      avatarUrl
+    }
+   	description
+    title
+    avatarUrl
+    tags
+    
+  }
+}
+    ''';
+    @override
+    Future<List<OpenClub>?> findByTitle(String title) async{
+    try{
+        final result = await graph?.mutate(MutationOptions(
+          document: gql(findByTitleStr),
+          variables: {
+            'title': title,
+            
+          }
+        ));
+        if(result == null){
+          throw Exception('Result null');
+        }
+        if(result.isConcrete){
+          if( result.data['queryOpenClub'] == null){
+            throw Exception('Result data null');
+          }
+          final list = result.data['queryOpenClub'] as List;
+          List<OpenClub> clubs = [];
+          for (var json in list) {
+            final OpenClub openClub = OpenClub.fromMap(json);
+            clubs.add(openClub);
+          }
+          return clubs;
+        }else{
+          throw Exception('Result not concrete');
+        }
+      }catch(e){
+        print(e);
+        return null;
+      }
   }
 
   @override
-  Future<SocialClub> createSocialClub(SocialClub club) {
-    // TODO: implement createSocialClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> createUser(User nuser) {
-    // TODO: implement createUser
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> deleteClosedClub(ClosedClub club) {
-    // TODO: implement deleteClosedClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> deleteOpenClub(OpenClub club) {
-    // TODO: implement deleteOpenClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> deleteSocialClub(SocialClub club) {
-    // TODO: implement deleteSocialClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<OpenClub>> findByTitle(String title) {
-    // TODO: implement findByTitle
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<SocialClub>> socialClubs() {
+  Future<List<SocialClub>?> socialClubs() {
     // TODO: implement socialClubs
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<ClosedClub> updateClosedClub(ClosedClub club) {
-    // TODO: implement updateClosedClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<OpenClub> updateOpenClub(OpenClub club) {
-    // TODO: implement updateOpenClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<SocialClub> updateSocialClub(SocialClub club) {
-    // TODO: implement updateSocialClub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<OpenClub> createOpenClub(OpenClub club) {
-    // TODO: implement createOpenClub
     throw UnimplementedError();
   }
 }

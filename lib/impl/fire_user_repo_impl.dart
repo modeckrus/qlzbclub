@@ -69,9 +69,11 @@ class FirebaseUserRepo implements UserService {
           await Dependencies.initDb();
         }
         final duser = await GetIt.I.get<Db>().getUser();
+        
         if(duser == null){
         _controller?.add(AuthenticationStatus.unsetted);
         user = User(fid: fireUser!.id, photoUrl: fireUser!.photoUrl, name: fireUser!.displayName, id: '');
+        
         }else{
           user = duser;
           isEmailVerified = fireUser!.emailVerified;
@@ -86,7 +88,6 @@ class FirebaseUserRepo implements UserService {
       box?.values.forEach((element) {
         user = element;
       });
-      
       if(fireUser!.emailVerified){
         if(user?.tags == null || user!.tags!.length <= 0){
           _controller?.add(AuthenticationStatus.unsetted);

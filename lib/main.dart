@@ -57,10 +57,10 @@ class _MyAppState extends State<MyApp> {
       // Navigator.pushNamed(context, '/');
     } catch (e) {
       print(e);
-      final dir = Directory(PathService.cacheDir??PathService.defaultPath);
+      final dir = Directory(PathService.hiveDir??PathService.defaultPath);
       dir.deleteSync(recursive: true);
-
-      throw e;
+      appinit();
+      return 0;
     }
   }
   bool loading = true;

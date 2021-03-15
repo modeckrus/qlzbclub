@@ -24,11 +24,11 @@ class UserAdapter extends TypeAdapter<User> {
       status: fields[5] as String,
       bio: fields[6] as String,
       fid: fields[7] as String,
-      tags: (fields[8] as List).cast<String>(),
-      socials: (fields[9] as List).cast<String>(),
+      tags: (fields[8] as List)?.cast<String>(),
+      socials: (fields[9] as List)?.cast<String>(),
       link: fields[10] as String,
-      subs: (fields[11] as List).cast<String>(),
-      followers: (fields[12] as List).cast<String>(),
+      subs: (fields[11] as List)?.cast<String>(),
+      followers: (fields[12] as List)?.cast<String>(),
       id: fields[13] as String,
     );
   }

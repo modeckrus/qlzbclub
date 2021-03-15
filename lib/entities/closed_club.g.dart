@@ -18,20 +18,21 @@ class ClosedClubAdapter extends TypeAdapter<ClosedClub> {
     };
     return ClosedClub(
       fields[0] as User,
-      (fields[1] as List).cast<String>(),
-      (fields[2] as List).cast<String>(),
+      (fields[1] as List).cast<User>(),
+      (fields[2] as List).cast<User>(),
       fields[3] as String,
       fields[4] as String,
       (fields[5] as List).cast<String>(),
       (fields[6] as List).cast<String>(),
       fields[7] as String,
+      fields[8] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ClosedClub obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.owner)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class ClosedClubAdapter extends TypeAdapter<ClosedClub> {
       ..writeByte(6)
       ..write(obj.invitedPeoples)
       ..writeByte(7)
-      ..write(obj.avatarUrl);
+      ..write(obj.avatarUrl)
+      ..writeByte(8)
+      ..write(obj.id);
   }
 
   @override

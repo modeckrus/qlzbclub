@@ -14,9 +14,9 @@ class SocialClub extends Equatable {
   @HiveField(0)
   final User owner;
   @HiveField(1)
-  final List<String> moderators;
+  final List<User> moderators;
   @HiveField(2)
-  final List<String> members;
+  final List<User> members;
   @HiveField(3)
   final String title;
   @HiveField(4)
@@ -25,23 +25,55 @@ class SocialClub extends Equatable {
   final List<String> tags;
   @HiveField(6)
   final String? avatarUrl;
-
-  SocialClub(this.owner, this.moderators, this.members, this.title, this.description, this.tags, this.avatarUrl);
-  factory SocialClub.createSocialClub({required String title , required String description , required List<String> tags , List<String> moderators = const [], String? avatarUrl}){
-    return SocialClub(GetIt.I.get<User>(), [], [], title, description, tags, avatarUrl);
+  @HiveField(7)
+  final String? id;
+  SocialClub(this.owner, this.moderators, this.members, this.title, this.description, this.tags, this.avatarUrl, this.id);
+  factory SocialClub.createSocialClub({required String title , required String description , required List<String> tags , List<String> moderators = const [], String? avatarUrl, String? id}){
+    return SocialClub(GetIt.I.get<User>(), [], [], title, description, tags, avatarUrl, id);
   }
 
   @override
   List<Object> get props => [owner, moderators, members, title, description, tags];
 
+
+  Map<String, dynamic> toMap() {
+    return {
+      'owner': owner.toMap(),
+      'moderators': moderators?.map((x) => x.toMap())?.toList(),
+      'members': members?.map((x) => x.toMap())?.toList(),
+      'title': title,
+      'description': description,
+      'tags': tags,
+      'avatarUrl': avatarUrl,
+    };
+  }
+
+  factory SocialClub.fromMap(Map<String, dynamic> map) {
+    return SocialClub(
+      User.fromMap(map['owner']),
+      map['moderators'] == null ? [] : List<User>.from(map['moderators']?.map((x) => User.fromMap(x))),
+      map['members'] == null ? [] : List<User>.from(map['members']?.map((x) => User.fromMap(x))),
+      map['title'],
+      map['description'],
+      map['tags'] == null ? [] :List<String>.from(map['tags']),
+      map['avatarUrl'],
+      map['id']
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SocialClub.fromJson(String source) => SocialClub.fromMap(json.decode(source));
+
   SocialClub copyWith({
     User? owner,
-    List<String>? moderators,
-    List<String>? members,
+    List<User>? moderators,
+    List<User>? members,
     String? title,
     String? description,
     List<String>? tags,
     String? avatarUrl,
+    String? id
   }) {
     return SocialClub(
       owner ?? this.owner,
@@ -50,38 +82,10 @@ class SocialClub extends Equatable {
       title ?? this.title,
       description ?? this.description,
       tags ?? this.tags,
-      avatarUrl ?? this.avatarUrl
+      avatarUrl ?? this.avatarUrl,
+      id ?? this.id
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'owner': owner.toMap(),
-      'moderators': moderators.map((x) => x).toList(),
-      'members': members.map((x) => x).toList(),
-      'title': title,
-      'description': description,
-      'tags': tags,
-      'avatarUrl': avatarUrl
-    };
-  }
-
-  factory SocialClub.fromMap(Map<String, dynamic> map) {
-  
-    return SocialClub(
-     User.fromMap(map['owner']),
-      map['moderators'] == null? []:List<String>.from(map['moderators'].map((x) => x)),
-      map['members'] == null? []:List<String>.from(map['members'].map((x) => x)),
-      map['title'],
-      map['description'],
-      map['tags'] == null? []:List<String>.from(map['tags']),
-      map['avatarUrl']
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SocialClub.fromJson(String source) => SocialClub.fromMap(json.decode(source));
 
   @override
   bool get stringify => true;

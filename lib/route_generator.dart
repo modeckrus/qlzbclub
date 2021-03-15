@@ -1,5 +1,6 @@
 // import 'dart:js';
 
+import 'package:clubhouse/pages/club_list_page.dart';
 import 'package:clubhouse/pages/club_page.dart';
 import 'package:clubhouse/pages/todo_page.dart';
 import 'package:flutter/widgets.dart';
@@ -38,6 +39,11 @@ class RouteGenerator {
       case '/club':
       return PageRouteTransition(
             builder: (_) => const ClubPage(),
+            animationType: AnimationType.slide_right,
+            curves: Curves.easeInOut);
+      case '/clubList':
+      return PageRouteTransition(
+            builder: (_) => const ClubListPage(),
             animationType: AnimationType.slide_right,
             curves: Curves.easeInOut);
       // case '/login':

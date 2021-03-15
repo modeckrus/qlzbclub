@@ -129,7 +129,7 @@ class User extends Equatable {
       bio: map['bio'],
       fid: map['fid'],
       tags: map['tags'] == null? []: List<String>.from(map['tags']?.map((x) => x)),
-      socials: List<String>.from(map['socials']?.map((x) => x)),
+      socials: map['socials'] == null? [] : List<String>.from(map['socials']?.map((x) => x)),
       link: map['link'],
       subs: map['subs'] == null? []:List<String>.from(map['subs']?.map((x) => x)),
       followers:map['followers'] == null? []: List<String>.from(map['followers']?.map((x) => x)),
